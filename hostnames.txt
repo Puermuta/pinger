@@ -1,0 +1,9 @@
+#Write your hostnames here.
+# Example:
+# google.com
+# youtube.com
+# github.com
+# Example for local hostnames:
+# comp1
+# comp2
+# comp3
