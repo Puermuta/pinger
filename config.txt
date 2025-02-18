@@ -1,0 +1,5 @@
+#If the last octet of an IP-address is above this number, it is counted as in quarantine.
+quarantineLower=200
+
+# The suffix will be added behind the hostnames specified in hostnames.txt. Leave blank to disable.
+suffix=.local
