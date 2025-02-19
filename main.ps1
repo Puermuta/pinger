@@ -9,9 +9,12 @@ foreach ($line in $config) {
 # Retrieves the hostnames from hostnames.txt.
 $hostnames = Get-Content ".\hostnames.txt"
 
-$counter = 0
+# Variables and arrays
+$clientCount = 0
 $quarantineCount = 0
 $quarantineHostnames = New-Object System.Collections.ArrayList
+$quarantineIps = New-Object System.Collections.ArrayList
+
 
 function checkIpAddress {
     param (
@@ -29,9 +32,10 @@ function checkIpAddress {
             # Checks if the last octet is above or equal to the quarantine number.
             $lastOctet = [int]$ipParts[-1]
             if ($lastOctet -ge $quarantineLower) {
+        # Increments the quarantineCount, adds the hostname to quarantineHostnames, and adds the IP to quarantineIps.
 		$global:quarantineCount += 1
 		$quarantineHostnames.Add($hostname)
-
+        $quarantineIps.Add($ipAddress)
             }
         }
     } catch {
@@ -45,13 +49,15 @@ function pingHost {
 	   [string]$hostname
 	)
 	
+    # Adds the suffix to the hostname. Example: hostname + .local
 	$hostnameWithLocal = $hostname + $suffix
+        # Pings a given hostname with one packet.
     	$ping = Test-Connection -ComputerName $hostnameWithLocal -Count 1 -Quiet
 
     	if ($ping) {
-		$global:counter += 1
-		checkIpAddress -hostname $hostnameWithLocal
-    	}	
+		    $global:clientCount += 1
+		    checkIpAddress -hostname $hostnameWithLocal
+    	}
 }
 
 function main {
@@ -60,7 +66,7 @@ function main {
     foreach ($hostname in $hostnames) {
 	Clear-Host
 	Write-Host "Pinging $hostname" -ForegroundColor yellow
-	Write-Host "Local clients found: $counter"
+	Write-Host "Local clients found: $clientCount"
 	Write-Host "Clients in quarantine: $quarantineCount"
 
 	pingHost -hostname $hostname
@@ -69,15 +75,15 @@ function main {
     # End state
     Clear-Host
     Write-Host "Done." -ForegroundColor green
-    Write-Host "Local clients found: $counter"
+    Write-Host "Local clients found: $clientCount"
     if ($quarantineCount -gt 0) {
 	Write-Host "Clients in quarantine: "
 	$quarantineHostnames
     } else {
-    	Write-Host "Clients in quarantine: "
+    	Write-Host "No clients in quarantine."
     }
-    Write-Host ""
-    
+    Write-Host "" 
 }
 
+# Run the function
 main
