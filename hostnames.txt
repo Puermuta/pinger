@@ -8,3 +8,12 @@
 # comp2
 # comp3
 
+HOME:
+hostname
+hostname
+hostname
+
+WORK:
+hostname
+hostname
+hostname

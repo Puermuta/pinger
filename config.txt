@@ -3,3 +3,6 @@ quarantineLower=200
 
 # The suffix will be added behind the hostnames specified in hostnames.txt. Leave blank to disable.
 suffix=.local
+
+# For a more reliable result when pinging, increase the amount of queries. Standard set to 1.
+queryCount=1
