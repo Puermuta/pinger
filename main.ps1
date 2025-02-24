@@ -39,7 +39,6 @@ function checkIpAddress {
             }
         }
     } catch {
-        Write-Error "Error resolving the hostname ${hostname}: $_"
     }
 }
 
@@ -62,27 +61,53 @@ function pingHost {
 
 function main {
 
+    # Reset the variables.
+    $global:clientCount = 0
+    $global:quarantineCount = 0
+    $global:quarantineHostnames = New-Object System.Collections.ArrayList
+    $global:quarantineIps = New-Object System.Collections.ArrayList
+
+
     # While searching
     foreach ($hostname in $hostnames) {
 	Clear-Host
 	Write-Host "Pinging $hostname" -ForegroundColor yellow
+    Write-Host ""
 	Write-Host "Local clients found: $clientCount"
 	Write-Host "Clients in quarantine: $quarantineCount"
 
-	pingHost -hostname $hostname
+	pingHost -hostname $hostname # Runs pingHost function.
     }
 
     # End state
     Clear-Host
     Write-Host "Done." -ForegroundColor green
+    Write-Host ""
     Write-Host "Local clients found: $clientCount"
+
     if ($quarantineCount -gt 0) {
-	Write-Host "Clients in quarantine: "
-	$quarantineHostnames
+	    Write-Host "Clients in quarantine: " -NoNewLine
+        $table = @()
+        for ($i = 0; $i -lt $quarantineHostnames.Count; $i++) {
+            $table += [PSCustomObject]@{
+                'Hostname' = $quarantineHostnames[$i]
+                'IP address' = $quarantineIps[$i]
+            }
+        }  
+        $table | Format-Table -AutoSize
     } else {
     	Write-Host "No clients in quarantine."
     }
-    Write-Host "" 
+    Write-Host "Press ENTER to run tests again, or Q to exit."
+    while ($true) {
+        $key = [System.Console]::ReadKey($true)
+        if ($key.Key -eq "Enter") {
+            main
+        }
+        if ($key.Key -eq "Q") {
+            exit
+        }
+    }
 }
 
 # Run the function
