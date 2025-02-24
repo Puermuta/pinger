@@ -71,7 +71,7 @@ function main {
     # While searching
     foreach ($hostname in $hostnames) {
 	Clear-Host
-	Write-Host "Pinging $hostname" -ForegroundColor yellow
+	Write-Host "Pinging ${hostname}${suffix}" -ForegroundColor yellow
     Write-Host ""
 	Write-Host "Local clients found: $clientCount"
 	Write-Host "Clients in quarantine: $quarantineCount"
