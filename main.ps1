@@ -35,7 +35,7 @@ function checkIpAddress {
         # Increments the quarantineCount, adds the hostname to quarantineHostnames, and adds the IP to quarantineIps.
 		$global:quarantineCount += 1
 		$quarantineHostnames.Add($hostname)
-        $quarantineIps.Add($ipAddress)
+        	$quarantineIps.Add($ipAddress)
             }
         }
     } catch {
@@ -72,7 +72,7 @@ function main {
     foreach ($hostname in $hostnames) {
 	Clear-Host
 	Write-Host "Pinging ${hostname}${suffix}" -ForegroundColor yellow
-    Write-Host ""
+    	Write-Host ""
 	Write-Host "Local clients found: $clientCount"
 	Write-Host "Clients in quarantine: $quarantineCount"
 
@@ -85,8 +85,9 @@ function main {
     Write-Host ""
     Write-Host "Local clients found: $clientCount"
 
+    # Creates table with hostname and ip-address if clients are in quarantine.
     if ($quarantineCount -gt 0) {
-	    Write-Host "Clients in quarantine: " -NoNewLine
+	Write-Host "Clients in quarantine: " -NoNewLine
         $table = @()
         for ($i = 0; $i -lt $quarantineHostnames.Count; $i++) {
             $table += [PSCustomObject]@{
@@ -98,6 +99,8 @@ function main {
     } else {
     	Write-Host "No clients in quarantine."
     }
+
+    # Menu to loop or exit program.
     Write-Host "Press ENTER to run tests again, or Q to exit."
     while ($true) {
         $key = [System.Console]::ReadKey($true)
@@ -110,5 +113,5 @@ function main {
     }
 }
 
-# Run the function
+# Run program
 main
